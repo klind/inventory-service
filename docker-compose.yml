@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo
+    container_name: mongoDB
+    #hostname: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+      - MONGO_INITDB_DATABASE=inventory
+      #- MONGO_DB_USERNAME=$MONGO_DB_USERNAME
+      #- MONGO_DB_PASSWORD=$MONGO_DB_PASSWORD
+    volumes:
+      - ~/mongodb/data/db:/data/db/
+      - ~/mongodb/data/log:/var/log/mongodb/
+      - ./docker-entrypoint-initdb.d/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      #- $MONGO_INITDB_SCRIPTS_HOST_PATH:/docker-entrypoint-initdb.d/
+    #    networks:
+    #      - bikerental-network
+    command: ["--bind_ip", "0.0.0.0"]
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: inventory-service
+    container_name: inventory-service
+    restart: on-failure
+    depends_on:
+      - mongo
+    ports:
+      - 8081:8081
+    #environment:
+    #  - SERVER_PORT=8000
+    #  - SPRING_PROFILES_ACTIVE=prod
+    #  - SPRING_APPLICATION_NAME=$APP_NAME
+    #  - SPRING_DATA_MONGODB_AUTHENTICATION_DATABASE=$MONGO_DB
+    #  - SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=$MONGO_AUTO_INDEX_CREATION
+    #  - SPRING_DATA_MONGODB_HOST=mongo
+    #  - SPRING_DATA_MONGODB_PORT=27017
+    #  - SPRING_DATA_MONGODB_USERNAME=$MONGO_DB_USERNAME
+    #  - SPRING_DATA_MONGODB_PASSWORD=$MONGO_DB_PASSWORD
+    #  - SPRING_DATA_MONGODB_DATABASE=$MONGO_DB
+    #networks:
+    #  - main-network
+
+#networks:
+#  main-network:
+#    external:
+#      name: bikerental-network
