@@ -1,4 +1,4 @@
-// This file is only being executed where there is not data in ~/mongodb/data/db
+// This file is only being executed when there is no data in ~/mongodb/data/db
 
 db = db.getSiblingDB('inventory');
 
