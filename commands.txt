@@ -2,9 +2,14 @@ docker build -t inventory-service .
 
 docker run --rm --name mongoDB -p 27017:27017 -v ~/mongodb/data/db:/data/db -e MONGO_INITDB_ROOT_USERNAME=mongo -e MONGO_INITDB_ROOT_PASSWORD=mongo --network bikerental-network mongo
 
-docker run --rm --name mongoDB -p 27017:27017 -v ~/mongodb/data/db:/data/db -v /Users/kristian/workspace/rental/inventory/docker-entrypoint-initdb.d/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro -e MONGO_INITDB_ROOT_USERNAME=mongo -e MONGO_INITDB_ROOT_PASSWORD=mongo --network bikerental-network mongo
+docker run --rm --name mongoDB -p 27017:27017 -v ~/mongodb/data/db:/data/db -v /Users/kristianlind/Documents/workspace/inventory-service/docker-entrypoint-initdb.d/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro -e MONGO_INITDB_DATABASE=inventory -e MONGO_INITDB_ROOT_USERNAME=mongo -e MONGO_INITDB_ROOT_PASSWORD=mongo --network bikerental-network mongo
 
 
 docker run -d --name inventory-service -p 8081:8081 --network bikerental-network inventory-service
 
 db.auth("mongo","mongo")
+
+in Mongo Shell:
+use inventory
+db.auth("inventory_user", "inventory_pass")
+show collections
